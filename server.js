@@ -8,6 +8,10 @@ var PLEDGES_COLLECTION = "pledges";
 var app = express();
 app.use(bodyParser.json());
 
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('build'));
+}
+
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
 var db;
 
