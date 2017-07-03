@@ -150,22 +150,22 @@ class FilterablePledgeTable extends React.Component {
 // drop-down for charity they want to donate to and then only show those
 // eligible.
 var PLEDGES =
-// [
-//   {"_id": "5959e5ce15f9b540bc999d23", category: 'Poverty', price: '$1000', active: true, name: 'AMF', id:'1', tax_ded:'UK', tax_res:'Canada'},
-//   {category: 'Poverty', price: '$200', active: true, name: 'SCI', id:'2', tax_ded:'Australia, Canada, EU, UK, US', tax_res:'Mexico'},
-//   {category: 'Poverty', price: '$253', active: false, name: 'AMF', id:'3', tax_ded:'UK'},
-//   {category: 'X-Risk', price: '$824', active: true, name: 'MIRI', id:'4', tax_ded:'US'},
-//   {category: 'Animal Welfare', price: '$400', active: false, name: 'Humane League', id:'5', tax_ded:'US'},
-//   {category: 'Animal Welfare', price: '$10000', active: true, name: 'Good Food Institute', id:'6', tax_ded:'Canada, US'},
-// ];
-fetch('/api/pledges')
-  .then(function(response) {
-    return response.json()
-  }).then(function(json) {
-    console.log('parsed json', json)
-  }).catch(function(ex) {
-    console.log('parsing failed', ex)
-  })
+[
+  {"_id": "5959e5ce15f9b540bc999d23", category: 'Poverty', price: '$1000', active: true, name: 'AMF', id:'1', tax_ded:'UK', tax_res:'Canada'},
+  {category: 'Poverty', price: '$200', active: true, name: 'SCI', id:'2', tax_ded:'Australia, Canada, EU, UK, US', tax_res:'Mexico'},
+  {category: 'Poverty', price: '$253', active: false, name: 'AMF', id:'3', tax_ded:'UK'},
+  {category: 'X-Risk', price: '$824', active: true, name: 'MIRI', id:'4', tax_ded:'US'},
+  {category: 'Animal Welfare', price: '$400', active: false, name: 'Humane League', id:'5', tax_ded:'US'},
+  {category: 'Animal Welfare', price: '$10000', active: true, name: 'Good Food Institute', id:'6', tax_ded:'Canada, US'},
+];
+// fetch('/api/pledges')
+//   .then(function(response) {
+//     return response.json()
+//   }).then(function(json) {
+//     console.log('parsed json', json)
+//   }).catch(function(ex) {
+//     console.log('parsing failed', ex)
+//   })
 
 
 class App extends Component {
