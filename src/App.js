@@ -15,12 +15,16 @@ class PledgeRow extends React.Component {
       <span style={{color: 'red'}}>
         {this.props.pledge.name}
       </span>;
+    var button = this.props.pledge.active ?
+      <button>Match Pledge</button> :
+      <button disabled>Match Pledge</button>
     return (
       <tr>
         <td>{name}</td>
         <td>{this.props.pledge.price}</td>
         <td>{this.props.pledge.tax_ded}</td>
         <td>{this.props.pledge.tax_res}</td>
+        <td>{button}</td>
       </tr>
     );
   }
@@ -31,7 +35,7 @@ class PledgeTable extends React.Component {
     var rows = [];
     var lastCategory = null;
     this.props.pledges.forEach((pledge) => {
-      if ((pledge.name.indexOf(this.props.filterText) === -1 ||
+      if ((pledge.tax_ded.indexOf(this.props.filterText) === -1 ||
           (!pledge.active && this.props.activeOnly))) {
         return;
       }
@@ -46,9 +50,10 @@ class PledgeTable extends React.Component {
         <thead>
           <tr>
             <th>Charity</th>
-            <th>Donation to match</th>
-            <th>Countries with tax deductibility</th>
-            <th>Country the donor is tax resident in</th>
+            <th>Pledge</th>
+            <th>Tax deductible countries</th>
+            <th>Tax residency of donor</th>
+            <th>Match</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>
@@ -58,12 +63,36 @@ class PledgeTable extends React.Component {
 }
 
 class SearchBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleFilterTextInputChange = this.handleFilterTextInputChange.bind(this);
+    this.handleActiveInputChange = this.handleActiveInputChange.bind(this);
+  }
+
+  handleFilterTextInputChange(e) {
+    this.props.onFilterTextInput(e.target.value);
+  }
+
+  handleActiveInputChange(e) {
+    this.props.onActiveInput(e.target.checked);
+  }
+
   render() {
     return (
       <form>
-        <input type="text" placeholder="Search..." />
+        <input
+          className="Search-box"
+          type="text"
+          placeholder="Enter your country of tax residency"
+          value={this.props.filterText}
+          onChange={this.handleFilterTextInputChange}
+        />
         <p>
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            checked={this.props.activeOnly}
+            onChange={this.handleActiveInputChange}
+          />
           {' '}
           Only show pledges that are active
         </p>
@@ -79,6 +108,21 @@ class FilterablePledgeTable extends React.Component {
       filterText: '',
       activeOnly: false
     };
+
+    this.handleFilterTextInput = this.handleFilterTextInput.bind(this);
+    this.handleActiveInput = this.handleActiveInput.bind(this);
+  }
+
+  handleFilterTextInput(filterText) {
+    this.setState({
+      filterText: filterText
+    });
+  }
+
+  handleActiveInput(activeOnly) {
+    this.setState({
+      activeOnly: activeOnly
+    })
   }
 
   render() {
@@ -86,7 +130,9 @@ class FilterablePledgeTable extends React.Component {
       <div>
         <SearchBar
           filterText={this.state.filterText}
-          inStockOnly={this.state.activeOnly}
+          activeOnly={this.state.activeOnly}
+          onFilterTextInput={this.handleFilterTextInput}
+          onActiveInput={this.handleActiveInput}
         />
         <PledgeTable
           pledges={this.props.pledges}
@@ -104,11 +150,11 @@ class FilterablePledgeTable extends React.Component {
 // eligible.
 var PLEDGES = [
   {category: 'Poverty', price: '$1000', active: true, name: 'AMF', id:'1', tax_ded:'UK', tax_res:'Canada'},
-  {category: 'Poverty', price: '$200', active: true, name: 'SCI', id:'2', tax_ded:'US, UK, Australia', tax_res:'Mexico'},
+  {category: 'Poverty', price: '$200', active: true, name: 'SCI', id:'2', tax_ded:'Australia, Canada, EU, UK, US', tax_res:'Mexico'},
   {category: 'Poverty', price: '$253', active: false, name: 'AMF', id:'3', tax_ded:'UK'},
   {category: 'X-Risk', price: '$824', active: true, name: 'MIRI', id:'4', tax_ded:'US'},
-  {category: 'Animal Welfare', price: '$400', active: false, name: 'Humane League', id:'5'},
-  {category: 'Animal Welfare', price: '$10000', active: true, name: 'Good Food Institute', id:'6'}
+  {category: 'Animal Welfare', price: '$400', active: false, name: 'Humane League', id:'5', tax_ded:'US'},
+  {category: 'Animal Welfare', price: '$10000', active: true, name: 'Good Food Institute', id:'6', tax_ded:'Canada, US'},
 ];
 
 class App extends Component {
@@ -118,6 +164,10 @@ class App extends Component {
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Donation Swapper</h2>
+          <p>This table shows all pledges for donations that need pairing for
+            maximum tax effectiveness. Enter the country you are tax resident in
+            below to find matches.
+          </p>
         </div>
         <div>
           <FilterablePledgeTable pledges={PLEDGES} />
